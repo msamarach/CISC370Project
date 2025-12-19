@@ -1,0 +1,78 @@
+{% extends 'gym/base.html' %}
+{% load static %}
+
+{% block title %}Meet Our Instructors - GymPlace{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <h2 class="mb-2"><i class="bi bi-people-fill text-primary-custom me-2"></i>Meet Our Instructors</h2>
+        <p class="text-muted">Our certified fitness professionals are here to help you achieve your goals</p>
+    </div>
+
+    <div class="row g-4">
+        {% for instructor in instructors %}
+        <div class="col-lg-6" id="instructor-{{ instructor.id }}">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="rounded-circle bg-gradient-primary d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 80px; height: 80px;">
+                            {% if 'Strength' in instructor.specialty or 'Conditioning' in instructor.specialty %}
+                            <i class="bi bi-lightning-charge-fill text-white" style="font-size: 2rem;"></i>
+                            {% elif 'Yoga' in instructor.specialty or 'Pilates' in instructor.specialty %}
+                            <i class="bi bi-flower1 text-white" style="font-size: 2rem;"></i>
+                            {% elif 'Cardio' in instructor.specialty or 'HIIT' in instructor.specialty %}
+                            <i class="bi bi-heart-pulse-fill text-white" style="font-size: 2rem;"></i>
+                            {% elif 'Boxing' in instructor.specialty or 'Kickboxing' in instructor.specialty %}
+                            <i class="bi bi-trophy-fill text-white" style="font-size: 2rem;"></i>
+                            {% else %}
+                            <i class="bi bi-person-fill text-white" style="font-size: 2rem;"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h4 class="mb-1">{{ instructor.name }}</h4>
+                            <span class="badge bg-primary-custom">{{ instructor.specialty }}</span>
+                            <p class="text-muted small mb-0 mt-1">
+                                <i class="bi bi-award me-1"></i>{{ instructor.years_experience }} years experience
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-muted mb-3">{{ instructor.bio }}</p>
+                    
+                    {% if instructor.certifications %}
+                    <div class="mb-3">
+                        <strong class="small text-dark"><i class="bi bi-patch-check me-1"></i>Certifications:</strong>
+                        <p class="small text-muted mb-0">{{ instructor.certifications }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if instructor.email %}
+                    <div class="d-flex align-items-center text-muted small">
+                        <i class="bi bi-envelope me-2"></i>
+                        <a href="mailto:{{ instructor.email }}" class="text-decoration-none">{{ instructor.email }}</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-people text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="text-muted mt-3">No Instructors Listed</h4>
+                    <p class="text-muted">Check back soon for instructor profiles!</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-5">
+        <a href="{% url 'class_schedule' %}" class="btn btn-outline-primary">
+            <i class="bi bi-calendar3 me-2"></i>View Class Schedule
+        </a>
+    </div>
+</div>
+{% endblock %}

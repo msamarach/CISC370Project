@@ -1,0 +1,104 @@
+{% extends 'gym/base.html' %}
+
+{% block title %}{{ gym_class.name }} - GymPlace{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-gradient-primary text-white py-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h3 class="mb-1">{{ gym_class.name }}</h3>
+                        <p class="mb-0 opacity-75">with {% if gym_class.instructor_obj %}<a href="{% url 'instructors' %}#instructor-{{ gym_class.instructor_obj.id }}" class="text-white text-decoration-underline">{{ gym_class.instructor }}</a>{% else %}{{ gym_class.instructor }}{% endif %}</p>
+                    </div>
+                    {% if gym_class.spots_available > 0 %}
+                    <span class="badge bg-success fs-6">{{ gym_class.spots_available }} spots left</span>
+                    {% else %}
+                    <span class="badge bg-danger fs-6">Class Full</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-calendar-event text-primary-custom" style="font-size: 1.5rem;"></i>
+                            <p class="mb-0 mt-2 fw-bold">{{ gym_class.get_day_of_week_display }}</p>
+                            <small class="text-muted">Day</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-clock text-primary-custom" style="font-size: 1.5rem;"></i>
+                            <p class="mb-0 mt-2 fw-bold">{{ gym_class.start_time }}</p>
+                            <small class="text-muted">Start Time</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-hourglass-split text-primary-custom" style="font-size: 1.5rem;"></i>
+                            <p class="mb-0 mt-2 fw-bold">{{ gym_class.duration_minutes }} min</p>
+                            <small class="text-muted">Duration</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded text-center">
+                            <i class="bi bi-people text-primary-custom" style="font-size: 1.5rem;"></i>
+                            <p class="mb-0 mt-2 fw-bold">{{ gym_class.current_registrations }}/{{ gym_class.capacity }}</p>
+                            <small class="text-muted">Enrolled</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3"><i class="bi bi-card-text text-primary-custom me-2"></i>About This Class</h5>
+                <p class="text-muted">{{ gym_class.description }}</p>
+                
+                {% if gym_class.spots_available > 0 %}
+                <a href="{% url 'class_register' gym_class.pk %}" class="btn btn-primary btn-lg w-100 mt-3">
+                    <i class="bi bi-calendar-plus me-2"></i>Reserve Your Spot
+                </a>
+                {% else %}
+                <button class="btn btn-secondary btn-lg w-100 mt-3" disabled>
+                    <i class="bi bi-x-circle me-2"></i>Class Full - Check Back Later
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-gradient-dark text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-people-fill me-2"></i>Registered ({{ registrations.count }})</h5>
+            </div>
+            <div class="card-body p-0">
+                {% if registrations %}
+                <div class="list-group list-group-flush">
+                    {% for reg in registrations %}
+                    <div class="list-group-item d-flex align-items-center py-3">
+                        <div class="rounded-circle bg-gradient-primary d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                            <span class="text-white fw-bold">{{ reg.member.first_name|first }}</span>
+                        </div>
+                        <div>
+                            <strong>{{ reg.member.first_name }} {{ reg.member.last_name }}</strong><br>
+                            <small class="text-muted">Joined {{ reg.registered_at|date:"M d" }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-person-plus text-muted" style="font-size: 2.5rem;"></i>
+                    <p class="text-muted mt-3 mb-0">No registrations yet.<br>Be the first to sign up!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <a href="{% url 'class_schedule' %}" class="btn btn-outline-dark w-100 mt-3">
+            <i class="bi bi-arrow-left me-2"></i>Back to Schedule
+        </a>
+    </div>
+</div>
+{% endblock %}

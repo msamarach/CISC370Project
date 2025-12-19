@@ -1,0 +1,97 @@
+{% extends 'gym/base.html' %}
+
+{% block title %}My Profile - GymPlace{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg">
+            <div class="card-header bg-gradient-primary text-white py-4">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-person-fill text-primary-custom" style="font-size: 2rem;"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0">My Profile</h4>
+                        <small class="opacity-75">Manage your account information</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="bg-light rounded p-3 text-center">
+                            <i class="bi bi-person-badge text-primary-custom" style="font-size: 1.5rem;"></i>
+                            <p class="mb-0 small text-muted">Username</p>
+                            <strong>{{ user.username }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light rounded p-3 text-center">
+                            <i class="bi bi-award text-primary-custom" style="font-size: 1.5rem;"></i>
+                            <p class="mb-0 small text-muted">Membership</p>
+                            <strong>{{ member.get_membership_type_display }}</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3">
+                        <div class="bg-light rounded p-3 text-center">
+                            <i class="bi bi-calendar-check text-primary-custom" style="font-size: 1.5rem;"></i>
+                            <p class="mb-0 small text-muted">Member Since</p>
+                            <strong>{{ member.date_joined|date:"M d, Y" }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="bg-light rounded p-3 text-center">
+                            <i class="bi bi-check-circle text-success" style="font-size: 1.5rem;"></i>
+                            <p class="mb-0 small text-muted">Status</p>
+                            <strong>{% if member.is_active %}Active{% else %}Inactive{% endif %}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                
+                <h5 class="mb-3"><i class="bi bi-pencil-square me-2"></i>Edit Profile</h5>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_first_name" class="form-label fw-semibold">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_last_name" class="form-label fw-semibold">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label fw-semibold">Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_phone" class="form-label fw-semibold">Phone Number</label>
+                        {{ form.phone }}
+                    </div>
+                    <div class="mb-4">
+                        <label for="id_membership_type" class="form-label fw-semibold">Membership Type</label>
+                        {{ form.membership_type }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-check2-circle me-2"></i>Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

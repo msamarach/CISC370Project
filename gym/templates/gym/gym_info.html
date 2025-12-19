@@ -1,0 +1,154 @@
+{% extends 'gym/base.html' %}
+
+{% block title %}Gym Info - GymPlace{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-gradient-dark text-white">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-6 fw-bold mb-2">
+                            <i class="bi bi-building me-2"></i>GymPlace Info
+                        </h1>
+                        <p class="mb-0 opacity-75">Hours of operation, upcoming events, and important dates</p>
+                    </div>
+                    <div class="col-lg-4 text-end d-none d-lg-block">
+                        <i class="bi bi-calendar-event" style="font-size: 4rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-gradient-primary text-white py-2">
+                <h6 class="mb-0"><i class="bi bi-clock me-2"></i>Regular Hours</h6>
+            </div>
+            <div class="card-body py-2">
+                {% for item in regular_hours %}
+                <div class="d-flex justify-content-between align-items-center py-1 {% if not forloop.last %}border-bottom{% endif %}">
+                    <span class="small fw-semibold">{{ item.day }}</span>
+                    <span class="badge bg-success small">{{ item.hours }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-8">
+        {% if special_hours %}
+        <div class="card">
+            <div class="card-header bg-warning text-dark py-2">
+                <h6 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Special Hours & Closures</h6>
+            </div>
+            <div class="card-body py-2">
+                {% for special in special_hours %}
+                <div class="d-flex justify-content-between align-items-center py-1 {% if not forloop.last %}border-bottom{% endif %}">
+                    <div>
+                        <span class="small fw-semibold">{{ special.title }}</span>
+                        <span class="text-muted small ms-2">{{ special.date|date:"M d" }}</span>
+                    </div>
+                    {% if special.is_closed %}
+                    <span class="badge bg-danger small">Closed</span>
+                    {% else %}
+                    <span class="badge bg-info small">{{ special.open_time }} - {{ special.close_time }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center py-3">
+                <i class="bi bi-check-circle text-success" style="font-size: 1.5rem;"></i>
+                <p class="mb-0 small text-muted mt-1">No closures scheduled</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-gradient-dark text-white py-2">
+        <h6 class="mb-0"><i class="bi bi-calendar-month me-2"></i>{{ month_name }} {{ year }}</h6>
+    </div>
+    <div class="card-body p-2">
+        <div class="table-responsive">
+            <table class="table table-bordered mb-0" style="table-layout: fixed;">
+                <thead>
+                    <tr class="text-center bg-light">
+                        <th class="py-2 small">Sun</th>
+                        <th class="py-2 small">Mon</th>
+                        <th class="py-2 small">Tue</th>
+                        <th class="py-2 small">Wed</th>
+                        <th class="py-2 small">Thu</th>
+                        <th class="py-2 small">Fri</th>
+                        <th class="py-2 small">Sat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in calendar_weeks %}
+                    <tr>
+                        {% for day in week %}
+                        <td class="p-1 text-center align-top {% if not day.is_current_month %}bg-light text-muted{% endif %} {% if day.is_today %}bg-primary bg-opacity-10 border-primary border-2{% endif %} {% if day.special and day.special.is_closed %}bg-danger bg-opacity-10{% endif %}" style="height: 80px;">
+                            <div class="fw-bold {% if day.is_today %}text-primary{% endif %}">
+                                {{ day.date|date:"d" }}
+                            </div>
+                            {% if day.is_current_month %}
+                                {% if day.special %}
+                                    {% if day.special.is_closed %}
+                                    <span class="badge bg-danger w-100 mt-1" style="font-size: 0.6rem;">{{ day.special.title }}</span>
+                                    {% else %}
+                                    <span class="badge bg-warning text-dark w-100 mt-1" style="font-size: 0.6rem;">Modified</span>
+                                    {% endif %}
+                                {% endif %}
+                                {% if day.events %}
+                                    {% for event in day.events %}
+                                    <span class="badge bg-{% if event.event_type == 'workshop' %}warning text-dark{% elif event.event_type == 'competition' %}purple{% elif event.event_type == 'special' %}success{% else %}info{% endif %} w-100 mt-1" style="font-size: 0.55rem; {% if event.event_type == 'competition' %}background-color: #6f42c1 !important;{% endif %}">{{ event.title|truncatewords:2 }}</span>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if upcoming_events %}
+<div class="card">
+    <div class="card-header bg-info text-white py-2">
+        <h6 class="mb-0"><i class="bi bi-stars me-2"></i>Upcoming Events</h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="list-group list-group-flush">
+            {% for event in upcoming_events %}
+            <div class="list-group-item py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge me-2" style="{% if event.event_type == 'workshop' %}background-color: #ffc107; color: #000;{% elif event.event_type == 'competition' %}background-color: #6f42c1;{% elif event.event_type == 'special' %}background-color: #198754;{% else %}background-color: #0dcaf0;{% endif %}">{{ event.get_event_type_display }}</span>
+                        <strong class="small">{{ event.title }}</strong>
+                        {% if event.description %}
+                        <span class="text-muted small ms-2">{{ event.description|truncatewords:10 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="text-end">
+                        <span class="small fw-bold">{{ event.date|date:"M d" }}</span>
+                        <span class="text-muted small">{{ event.start_time }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

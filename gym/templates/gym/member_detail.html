@@ -1,0 +1,98 @@
+{% extends 'gym/base.html' %}
+
+{% block title %}{{ member.first_name }} {{ member.last_name }} - GymPlace{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-gradient-primary text-white text-center py-4">
+                <div class="rounded-circle bg-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <span class="text-primary-custom fw-bold" style="font-size: 2rem;">{{ member.first_name|first }}{{ member.last_name|first }}</span>
+                </div>
+                <h4 class="mb-0">{{ member.first_name }} {{ member.last_name }}</h4>
+                <span class="badge bg-white text-dark mt-2">{{ member.get_membership_type_display }}</span>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="py-2 border-bottom">
+                        <i class="bi bi-envelope text-primary-custom me-2"></i>
+                        <span class="text-muted">Email</span><br>
+                        <strong>{{ member.email }}</strong>
+                    </li>
+                    <li class="py-2 border-bottom">
+                        <i class="bi bi-telephone text-primary-custom me-2"></i>
+                        <span class="text-muted">Phone</span><br>
+                        <strong>{{ member.phone }}</strong>
+                    </li>
+                    <li class="py-2">
+                        <i class="bi bi-calendar-event text-primary-custom me-2"></i>
+                        <span class="text-muted">Member Since</span><br>
+                        <strong>{{ member.date_joined|date:"F d, Y" }}</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-gradient-dark text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Class Registrations</h5>
+            </div>
+            <div class="card-body p-0">
+                {% if registrations %}
+                <div class="list-group list-group-flush">
+                    {% for reg in registrations %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <div>
+                            <i class="bi bi-activity text-primary-custom me-2"></i>
+                            <strong>{{ reg.gym_class.name }}</strong><br>
+                            <small class="text-muted">
+                                <i class="bi bi-clock me-1"></i>{{ reg.gym_class.get_day_of_week_display }} at {{ reg.gym_class.start_time }}
+                            </small>
+                        </div>
+                        <span class="badge bg-success rounded-pill"><i class="bi bi-check2 me-1"></i>Registered</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-calendar-x text-muted" style="font-size: 2rem;"></i>
+                    <p class="text-muted mt-2 mb-0">No class registrations yet</p>
+                </div>
+                {% endif %}
+                <div class="card-footer bg-light">
+                    <a href="{% url 'class_schedule' %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i>Browse Classes
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-graph-up-arrow me-2"></i>Recent Attendance</h5>
+            </div>
+            <div class="card-body p-0">
+                {% if attendance %}
+                <div class="list-group list-group-flush">
+                    {% for att in attendance %}
+                    <div class="list-group-item py-3">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        <strong>{{ att.check_in_time|date:"l, F d" }}</strong>
+                        <span class="text-muted">at {{ att.check_in_time|time:"g:i A" }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-calendar2-x text-muted" style="font-size: 2rem;"></i>
+                    <p class="text-muted mt-2 mb-0">No attendance records yet</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

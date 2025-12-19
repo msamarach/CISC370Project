@@ -1,0 +1,47 @@
+{% extends 'gym/base.html' %}
+
+{% block title %}Check In - GymPlace{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-lg">
+            <div class="card-header bg-gradient-primary text-white py-4 text-center">
+                <i class="bi bi-door-open" style="font-size: 3rem;"></i>
+                <h3 class="mb-0 mt-2">Check In</h3>
+                <p class="mb-0 opacity-75">Welcome, {{ member.first_name }}!</p>
+            </div>
+            <div class="card-body p-4 text-center">
+                <p class="lead mb-4">Ready to work out? Tap the button below to check in.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-lg w-100 py-3" style="font-size: 1.5rem;">
+                        <i class="bi bi-check-circle me-2"></i>Check In Now
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        {% if recent_checkins %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-gradient-dark text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Your Recent Check-Ins</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for checkin in recent_checkins %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <div>
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>{{ checkin.check_in_time|date:"l, F j, Y" }}</strong>
+                        </div>
+                        <span class="text-muted">{{ checkin.check_in_time|time:"g:i A" }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

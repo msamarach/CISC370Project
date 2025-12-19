@@ -1,0 +1,65 @@
+{% extends 'gym/base.html' %}
+
+{% block title %}Register for {{ gym_class.name }} - GymPlace{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+        <div class="card shadow-lg">
+            <div class="card-header bg-gradient-primary text-white py-4 text-center">
+                <i class="bi bi-calendar-plus" style="font-size: 2.5rem;"></i>
+                <h4 class="mb-0 mt-2">Reserve Your Spot</h4>
+                <p class="mb-0 opacity-75">{{ gym_class.name }}</p>
+            </div>
+            <div class="card-body p-4">
+                <div class="bg-light rounded p-3 mb-4">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <i class="bi bi-person-badge text-primary-custom"></i>
+                            <p class="mb-0 small text-muted">Instructor</p>
+                            <strong class="small">{{ gym_class.instructor }}</strong>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-clock text-primary-custom"></i>
+                            <p class="mb-0 small text-muted">Time</p>
+                            <strong class="small">{{ gym_class.start_time }}</strong>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-people text-primary-custom"></i>
+                            <p class="mb-0 small text-muted">Spots</p>
+                            <strong class="small">{{ gym_class.spots_available }} left</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mb-4">
+                    <p class="mb-2">Registering as:</p>
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>{{ member.first_name }} {{ member.last_name }}</h5>
+                    <small class="text-muted">{{ member.email }}</small>
+                </div>
+                
+                {% if is_registered %}
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-check-circle-fill me-2"></i>You're already registered for this class!
+                </div>
+                <a href="{% url 'class_detail' gym_class.pk %}" class="btn btn-outline-dark btn-lg w-100">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Class
+                </a>
+                {% else %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                        <i class="bi bi-check-circle me-2"></i>Confirm Registration
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-light text-center py-3">
+                <a href="{% url 'class_detail' gym_class.pk %}" class="text-decoration-none">
+                    <i class="bi bi-arrow-left me-1"></i>Back to class details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
